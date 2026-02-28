@@ -64,5 +64,42 @@ Global Reach: Prepares students for higher studies (like MCA or MBA) and global 
     </div>
     
     <p>Scan the source code. The secret is buried in the comments.</p>
+
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // PASTE YOUR FIREBASE CONFIG HERE FROM STEP 1
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "...",
+    appId: "..."
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Function to record time
+  async function recordProgress(levelName) {
+    const studentName = localStorage.getItem("studentName") || "Anonymous";
+    
+    // This creates/updates a record for the student
+    const studentRef = doc(db, "competitors", studentName);
+    
+    await setDoc(studentRef, {
+      [levelName]: serverTimestamp(), // Records the exact server time including seconds
+      lastUpdated: serverTimestamp()
+    }, { merge: true });
+
+    console.log("Progress recorded for " + levelName);
+  }
+
+  // Call this immediately when the page loads
+  // Change "Level_1", "Level_2", etc. for each page
+  recordProgress("Level_2"); 
+</script>
 </body>
 </html>
