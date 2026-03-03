@@ -1,50 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Encrypted Layer</title>
-    <meta name="x-next-level-token" content="YmluYXJ5LXZhdWx0">
+  <title>Encrypted Layer</title>
+  <meta name="x-next-level-token" content="YmluYXJ5LXZhdWx0">
 </head>
+
 <body style="background:#222;color:yellow;text-align:center;padding:50px;">
-    <h1>LEVEL 4: THE METADATA</h1>
-    <p>The clues are getting harder. It's not in the body anymore.</p>
-    <p>Look at the <strong>Head</strong> of the document. Find the 'token' and decode it.</p>
-    <p><em>Hint: It's a 64-base foundation.</em></p>
-   
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  <h1>LEVEL 4: THE METADATA</h1>
+  <p>The clues are getting harder. It's not in the body anymore.</p>
+  <p>Look at the <strong>Head</strong> of the document. Find the 'token' and decode it.</p>
+  <p><em>Hint: It's a 64-base foundation.</em></p>
 
-  // PASTE YOUR FIREBASE CONFIG HERE FROM STEP 1
-  const firebaseConfig = {
-    apiKey: "AIzaSyBvIfNe4rizX_Iqvt8_Ywn5-I6BtQZtxy0",
-    authDomain: "techhunt-fc2fc.firebaseapp.com",
-    projectId: "techhunt-fc2fc",
-    storageBucket: "techhunt-fc2fc.firebasestorage.app",
-    messagingSenderId: "248679389058",
-    appId: "1:248679389058:web:c0f70a2557f73a4e80619b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Function to record time
-  async function recordProgress(levelName) {
-    const studentName = localStorage.getItem("studentName") || "Anonymous";
-    
-    // This creates/updates a record for the student
-    const studentRef = doc(db, "competitors", studentName);
-    
-    await setDoc(studentRef, {
-      [levelName]: serverTimestamp(), // Records the exact server time including seconds
-      lastUpdated: serverTimestamp()
-    }, { merge: true });
-
-    console.log("Progress recorded for " + levelName);
-  }
-
-  // Call this immediately when the page loads
-  // Change "Level_1", "Level_2", etc. for each page
-  recordProgress("Level_4"); 
-</script>
+  <script type="module">
+    import { initLevel } from "../../../js/tracking.js";
+    initLevel("Level_4"); 
+  </script>
 </body>
+
 </html>

@@ -1,53 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head><title>The Final Vault</title></head>
+
+<head>
+  <title>The Final Vault</title>
+</head>
+
 <body style="background:#000;color:#fff;font-family:monospace;padding:20px;">
-    <h1>LEVEL 5: THE VOID</h1>
-    <p>This is the end. There are no more scripts. No more comments. Only raw data.</p>
-    
-    <div class="user-profile-container">
-        <span class="lanimret-path-active-true"></span>
-        <p>Search every element. The answer is a "class" of its own.</p>
-        <p>Look for a class name that looks like gibberish and <strong>reverse it</strong>.</p>
-    </div>
+  <h1>LEVEL 5: THE VOID</h1>
+  <p>This is the end. There are no more scripts. No more comments. Only raw data.</p>
 
-    <div class="fake-data">ID: 9920 | Status: Null | Key: 0x000FF</div>
-  
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  <div class="user-profile-container">
+    <span class="lanimret-path-active-true"></span>
+    <p>Search every element. The answer is a "class" of its own.</p>
+    <p>Look for a class name that looks like gibberish and <strong>reverse it</strong>.</p>
+  </div>
 
-  // PASTE YOUR FIREBASE CONFIG HERE FROM STEP 1
-  const firebaseConfig = {
-    apiKey: "AIzaSyBvIfNe4rizX_Iqvt8_Ywn5-I6BtQZtxy0",
-    authDomain: "techhunt-fc2fc.firebaseapp.com",
-    projectId: "techhunt-fc2fc",
-    storageBucket: "techhunt-fc2fc.firebasestorage.app",
-    messagingSenderId: "248679389058",
-    appId: "1:248679389058:web:c0f70a2557f73a4e80619b"
-  };
+  <div class="fake-data">ID: 9920 | Status: Null | Key: 0x000FF</div>
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Function to record time
-  async function recordProgress(levelName) {
-    const studentName = localStorage.getItem("studentName") || "Anonymous";
-    
-    // This creates/updates a record for the student
-    const studentRef = doc(db, "competitors", studentName);
-    
-    await setDoc(studentRef, {
-      [levelName]: serverTimestamp(), // Records the exact server time including seconds
-      lastUpdated: serverTimestamp()
-    }, { merge: true });
-
-    console.log("Progress recorded for " + levelName);
-  }
-
-  // Call this immediately when the page loads
-  // Change "Level_1", "Level_2", etc. for each page
-  recordProgress("Level_5"); 
-</script>
+  <script type="module">
+    import { initLevel } from "../../../../js/tracking.js";
+    initLevel("Level_5"); 
+  </script>
 </body>
+
 </html>
