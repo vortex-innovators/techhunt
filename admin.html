@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Hunt | Admin Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --accent: #00ff00;
+            --text: #ffffff;
+            --text-dim: #888;
+            --border: #333;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: var(--accent);
+            margin: 0;
+        }
+
+        .login-screen {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        input {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            width: 280px;
+            outline: none;
+        }
+
+        button {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: auto;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #1a1a1a;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .stopwatch {
+            font-weight: 700;
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #222;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin: 2px;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login-container" class="login-screen">
+        <h1>Mission Admin</h1>
+        <p style="color: var(--text-dim)">Connect to Render Backend</p>
+        <input type="text" id="api-url" placeholder="https://your-app.onrender.com" value="">
+        <br>
+        <input type="password" id="admin-pass" placeholder="Admin Password">
+        <br>
+        <button onclick="login()">Enter Dashboard</button>
+    </div>
+
+    <div id="dashboard-container" class="dashboard hidden">
+        <header>
+            <h1>Tech Hunt Leaderboard</h1>
+            <button onclick="fetchStats()" style="background: #333; color: white;">Refresh Data</button>
+        </header>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Year</th>
+                        <th>Progress</th>
+                        <th>Stopwatch</th>
+                        <th>Last Activity</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let apiBase = '';
+        let pass = '';
+
+        function login() {
+            apiBase = document.getElementById('api-url').value.replace(/\/$/, '');
+            pass = document.getElementById('admin-pass').value;
+            fetchStats();
+        }
+
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${apiBase}/api/stats`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderTable(data);
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('dashboard-container').classList.remove('hidden');
+                } else {
+                    alert("Unauthorized or URL incorrect");
+                }
+            } catch (err) {
+                alert("Failed to connect to backend. Check your URL.");
+            }
+        }
+
+        function formatDuration(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return m > 0 ? `${m}m ${s}s` : `${sec}s`;
+        }
+
+        function renderTable(data) {
+            const body = document.getElementById('stats-body');
+            body.innerHTML = '';
+
+            data.forEach((s, i) => {
+                const prog = JSON.parse(s.progress);
+                const lvls = Object.keys(prog);
+                // Calculate total duration in seconds
+                const total = lvls.reduce((sum, k) => sum + (prog[k].duration_seconds || 0), 0);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${i + 1}</td>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.studentclass}</td>
+                    <td>Year ${s.year}</td>
+                    <td>${lvls.map(l => `<span class="level-badge">${l}</span>`).join('')}</td>
+                    <td><span class="stopwatch">${formatDuration(total)}</span></td>
+                    <td style="color:#888; font-size:0.8rem">${s.last_updated}</td>
+                `;
+                body.appendChild(row);
+            });
+        }
+    </script>
+</body>
+
+</html>

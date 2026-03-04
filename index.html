@@ -1,90 +1,217 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>System Mainframe</title>
-  <style>
-    body {
-      background: #0a0a0a;
-      color: #00ff00;
-      font-family: serif;
-      padding: 100px;
-      line-height: 1.6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Hunt: Identity Verification</title>
+    <style>
+        body {
+            background: #0a0a0a;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            background: #111;
+            border: 2px solid #00ff00;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        p {
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+        }
+
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 0 15px #00ff00;
+            transform: scale(1.02);
+        }
+
+        .error {
+            color: #ff3333;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* Matrix effect */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
 </head>
 
 <body>
-  <h1>MISSION START: THE GATEWAY</h1>
-  <p>Welcome to the college network. Most users only see what we want them to see. But a real engineer looks deeper. The
-    path is not on the screen; it is in the architecture.</p>
-  <p>1. The BCA (Hons.) Program Highlights
-    Modern Curriculum: The course is a 4-year (8-semester) Honours program designed for deep technical expertise.
+    <canvas id="matrix-canvas"></canvas>
 
-    Affiliation: It is affiliated with the APJ Abdul Kalam Technological University (KTU) and recognized by AICTE.
+    <div class="container">
+        <h1>ACCESS GRANTED?</h1>
+        <p>IDENTIFY YOURSELF TO PROCEED</p>
 
-    Core Focus: Intensive training in programming languages like Java, Python, C, and Web Technologies.
+        <form id="registration-form">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="Enter your full name">
+            </div>
 
-    Specialized Labs: Dedicated facilities for Database Management (DBMS), Data Structures, and Software Engineering.
+            <div class="input-group">
+                <label>Class</label>
+                <input type="text" id="studentClass" required placeholder="e.g. BCA, BSc IT">
+            </div>
 
-    Honours Advantage: The program includes "Project-based Learning" and "Skill Enhancement" courses for better
-    employability.
+            <div class="input-group">
+                <label>Year</label>
+                <select id="year" required>
+                    <option value="" disabled selected>Select Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">4th Year</option>
+                </select>
+            </div>
 
-    Add-on Courses: The department offers extra training in AI & Machine Learning and Data Science.
+            <button type="submit">Initialize Mission</button>
+            <div id="error-msg" class="error"></div>
+        </form>
+    </div>
 
-    Industry Ready: Emphasis is placed on the entire Software Development Lifecycle (SDLC) and Agile methodologies.
+    <script>
+        // Matrix Background
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-    Hands-on Approach: Weekly lab sessions managed by experienced faculty and lab instructors.
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const rainDrops = [];
 
-    Ethical Training: Focuses on professional ethics, privacy, and security in the digital landscape.
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
 
-    Continuous Learning: Encourages students to adapt to emerging trends like Cloud Computing and IoT.
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    2. About KMCT IETM (The College)
-    Location: Situated in the serene environment of Mukkam, Kozhikode, Kerala.
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
 
-    Legacy: Part of the prestigious KMCT Group of Institutions, known for healthcare and technical education.
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
 
-    Reputation: Recognized as a "beacon of innovation" in North Kerala for technical studies.
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
 
-    Infrastructure: The campus features state-of-the-art labs, ICT-enabled classrooms, and a vast library.
+        // --- CONFIGURATION ---
+        // Replace this with your actual Render URL after deployment
+        const API_BASE_URL = 'https://YOUR_RENDER_BACKEND_URL.onrender.com';
+        // ---------------------
 
-    Atmosphere: A disciplined yet vibrant campus life that balances academics with personal growth.
+        setInterval(draw, 30);
 
-    Facilities: Includes separate hostels for boys and girls, a multi-gym, and an indoor stadium.
+        // Form Submission
+        const form = document.getElementById('registration-form');
+        const errorMsg = document.getElementById('error-msg');
 
-    Green Campus: Known for its lush, eco-friendly surroundings that provide a peaceful study environment.
+        form.onsubmit = async (e) => {
+            e.preventDefault();
 
-    Transportation: Robust bus facilities connecting major nearby routes for day scholars.
+            const name = document.getElementById('name').value.trim();
+            const studentClass = document.getElementById('studentClass').value.trim();
+            const year = document.getElementById('year').value;
 
-    Canteen: On-campus cafeteria providing hygienic and affordable meals for students and staff.
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, studentClass, year })
+                });
 
-    Supportive Faculty: A dedicated team focused on personalized mentoring and student success.
+                const data = await response.json();
 
-    3. Career & Placement Opportunities
-    Placement Cell: A dedicated Training & Placement Cell bridges the gap between students and recruiters.
-
-    Training: Regular workshops on soft skills, aptitude, and mock interviews are conducted.
-
-    Recruiters: Students often find opportunities in companies like TCS, Wipro, and various South Indian IT startups.
-
-    Roles: Graduates typically move into roles such as Software Developer, Web Designer, or Systems Analyst.
-
-    Internships: The college facilitates industry interaction through projects and internship camps.
-
-    Global Reach: Prepares students for higher studies (like MCA or MBA) and global IT certifications.</p>
-
-  <div id="log-entry-4920" data-next-directory="logic-gate" style="color:transparent; font-size:0px;">
-    Hidden path found: /portal
-  </div>
-
-  <p>Scan the source code. The secret is buried in the comments.</p>
-
-
-  <script type="module">
-    import { initLevel } from "./js/tracking.js";
-    initLevel("Level_1");
-  </script>
+                if (response.ok) {
+                    localStorage.setItem('studentName', name);
+                    localStorage.setItem('studentClass', studentClass);
+                    localStorage.setItem('studentYear', year);
+                    window.location.href = 'mission.html';
+                } else {
+                    errorMsg.innerText = data.message || "Registration failed.";
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.innerText = "Error: Cannot connect to server. Check if the Render backend is running.";
+                errorMsg.style.display = 'block';
+            }
+        };
+    </script>
 </body>
 
 </html>
