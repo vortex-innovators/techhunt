@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // Replace this with your actual Render URL after deployment
-const API_BASE_URL = 'https://YOUR_RENDER_BACKEND_URL.onrender.com';
+const API_BASE_URL = 'https://tech-hunt-api.onrender.com';
 // ---------------------
 
 /**
