@@ -119,7 +119,7 @@ app.post('/api/track', async (req, res) => {
 app.post('/api/stats', async (req, res) => {
     try {
         const { password } = req.body;
-        if (password !== 'admin123') {
+        if (password !== 'heydendaniabd') {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
